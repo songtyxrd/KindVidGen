@@ -4,7 +4,6 @@ import aiohttp
 import base64
 import json
 import uuid
-import asyncio
 
 from kvidgen.core.config import settings
 
@@ -34,7 +33,7 @@ class TTSClient:
         self.cluster = cluster or settings.TTS_CLUSTER
         self.host = host
         self.api_url = f"https://{host}/api/v1/tts"
-        self.header = {"Authorization": f"Bearer;{self.access_token}"}
+        self.header = {"Authorization": f"Bearer;{self.access_token}"}  # noqa
 
     async def synthesize(
         self,
@@ -78,5 +77,4 @@ class TTSClient:
                     with open(save_path, "wb") as file_to_save:
                         file_to_save.write(base64.b64decode(data))
                     return save_path
-                else:
-                    return None
+                return None

@@ -44,8 +44,10 @@ class FfmpegAudioVideoMerger:
             return output_path
         except subprocess.CalledProcessError as e:
             logger.error(f"合成失败: {e}")
+            return None
         except FileNotFoundError:
             logger.error("ffmpeg 未安装或路径无效，请确保 ffmpeg 已正确配置。")
+            return None
 
 
 if __name__ == "__main__":

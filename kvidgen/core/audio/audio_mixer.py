@@ -43,7 +43,7 @@ class FfmpegAudioMixer:
             "-i",
             audio_path2,
             "-filter_complex",
-            f"[0:a]volume={audio_volume1}[a1];[1:a]volume={audio_volume2}[a2];[a1][a2]amix=inputs=2:duration=first[aout]",
+            f"[0:a]volume={audio_volume1}[a1];[1:a]volume={audio_volume2}[a2];[a1][a2]amix=inputs=2:duration=first[aout]",  # noqa
             # noqa
             "-map",
             "[aout]",

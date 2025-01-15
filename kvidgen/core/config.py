@@ -27,5 +27,10 @@ class Settings(BaseSettings):
     ACCESS_KEY_SECRET: str
     ENDPOINT: str
 
+    # gpt model
+    OPENAI_GPT_MODEL_NAME: str
+    OPENAI_GPT_BASE_URL: str
+    OPENAI_GPT_API_KEY: str
+
 
 settings = Settings(_env_file=".env")

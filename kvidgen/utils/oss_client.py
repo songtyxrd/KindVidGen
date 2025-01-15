@@ -1,6 +1,5 @@
-
-from os import path
 from threading import RLock
+from typing import Optional
 
 import asyncio_oss
 import oss2
@@ -30,8 +29,10 @@ class AliyunOssClient:
         ) as bucket:
             await bucket.put_object_from_file(object_key, filepath)
 
-    async def generate_signed_url(self, object_key: str, timout: int = 1 * 3600):
+    async def generate_signed_url(
+        self, object_key: str, timout: int = 1 * 60 * 10, method: Optional[str] = "GET"
+    ):
         async with asyncio_oss.Bucket(
             self.oss_auth, self.endpoint, self.bucket_name
         ) as bucket:
-            return await bucket.sign_url("PUT", object_key, timout)
+            return await bucket.sign_url(method, object_key, timout)

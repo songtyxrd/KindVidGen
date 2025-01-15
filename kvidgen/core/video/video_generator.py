@@ -105,7 +105,6 @@ class SlideshowVideoGenerator:
 
         video_writer.release()
         return self.output_path
-        logger.info(f"视频生成完成：{self.output_path}")
 
     def resize_with_padding(
         self, img: np.ndarray, target_size: Tuple[int, int]
@@ -133,35 +132,3 @@ class SlideshowVideoGenerator:
         return cv2.copyMakeBorder(
             resized_img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=(0, 0, 0)
         )
-
-
-if __name__ == "__main__":
-    # 示例使用
-    images = [
-        "/Users/songtianye/Documents/视频生成图片素材/1.jpeg",
-        "/Users/songtianye/Documents/视频生成图片素材/2.jpeg",
-        "/Users/songtianye/Documents/视频生成图片素材/3.jpeg",
-        "/Users/songtianye/Documents/视频生成图片素材/4.jpeg",
-        "/Users/songtianye/Documents/视频生成图片素材/5.jpeg",
-    ]
-    output_path = "docs/slideshow.mp4"
-    fps = 30
-    total_duration = 30
-
-    # 配置特效
-    effect_config = {
-        images[0]: "zoom",
-        images[1]: "highlight_border",
-        images[2]: "heartbeat",
-        images[3]: "spotlight",
-        images[4]: "zoom",
-    }
-
-    generator = SlideshowVideoGenerator(
-        images=images,
-        output_path=output_path,
-        fps=fps,
-        total_duration=total_duration,
-        effect_config=effect_config,
-    )
-    generator.create_video()
