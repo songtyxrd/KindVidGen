@@ -1,0 +1,25 @@
+{
+    "extends": [
+        "@commitlint/config-conventional"
+    ],
+    "rules": {
+        "scope-enum": [
+            2,
+            "always",
+            [
+                "kvidgen",
+                "benchmark",
+                "management",
+                "tests",
+                "cicd",
+                "devops",
+                "docker",
+                "npm",
+                "conf",
+                "pydoc",
+                "python",
+                "readme"
+            ]
+        ]
+    }
+}

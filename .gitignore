@@ -1,0 +1,99 @@
+							# General
+.#*
+._*
+.DS_Store
+.buildinfo
+*.bak
+*~
+*.setting
+*.pyc
+*.odem
+*.ws
+*.dtd
+*.lock
+*.log*
+*.pid
+*.port
+.gradle/
+build/
+project/
+pom.xml
+pom.xml.asc
+lombok.config
+SyncToy*
+tmp/
+data/
+dist/
+
+# IntelliJ IDEA
+*.iml
+*.ipr
+*.iws
+.idea/
+.run/
+classes/
+
+# Eclipse
+.project
+.classpath
+.settings/
+out/
+
+# vscode
+.vscode
+.history
+*.code-workspace
+
+# Vagrant
+.vagrant
+local-conf.rb
+cloud-conf
+Vagrantfile
+
+# Clojure/Leiningen
+checkouts/
+.lein-*
+.nrepl-*
+profiles.clj
+
+# Node
+node_modules/
+package-lock.json
+yarn.lock
+
+#kustomize
+k8s/kust/*/local
+
+# Svn
+.svn
+
+# Python
+Pipfile.lock
+.benchmarks/
+.mypy_cache/
+.pytest_cache/
+.coverage*
+.env
+coverage_html_report/
+benchmark*.svg
+.ipynb_checkpoints/
+*.ipynb
+
+# umi
+.umi
+.umi-production
+
+# screenshot
+screenshot
+.firebase
+
+# misc
+knowledge_base/
+logs/
+private/
+.temp/**
+# roadhog-api-doc ignore
+/frontend/src/utils/request-temp.js
+_roadhog-api-doc
+@localhost.session.sql
+tests/test.http

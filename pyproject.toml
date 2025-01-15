@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "kindvidgen"
+version = "1.0.0"
+description = "The project is for generating promotional videos for public welfare donations"
+authors = [
+  "Tinaye Song <songtianye1997@gamil.com>",
+]
+homepage = "https://github.com/songtyxrd/KindVidGen"
+repository = "https://github.com/songtyxrd/KindVidGen"
+
+
+
+[[tool.poetry.source]]
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+default = true
+
+# 注意⚠️首字母顺序-xavier.song
+[tool.poetry.dependencies]
+
+fastapi = "0.115.5"
+python = "3.12.0"
+loguru = "^0.7.2"
+nest-asyncio = "1.6.0"
+pretty-errors = "1.2.25"
+uvicorn = "0.32.1"
+opencv-python = "4.10.0.84"
+python-dotenv = "^1.0.1"
+aiohttp = "3.11.11"
+asyncio-oss = "^1.1.5"
+
+
+
+
+
+[tool.poetry.dev-dependencies]
+pre-commit = "4.0.1"
+pytest-aio = "1.9.0"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,15 @@
+.DS_Store
+.editorconfig
+.git
+.gitattributes
+.gitignore
+.gradle
+.gradletasknamecache
+.idea
+.mypy_cache
+**/build
+developer
+webarchive
+Pipfile.lock
+SyncToy*.dat
+*.pyc
