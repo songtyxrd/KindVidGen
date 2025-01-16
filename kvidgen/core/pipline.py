@@ -1,3 +1,4 @@
+import asyncio
 import math
 from typing import Any
 import os
@@ -5,12 +6,12 @@ from abc import ABC, abstractmethod
 
 from loguru import logger
 
-from kvidgen.core.agents.editor import Editor
+from kvidgen.core.agents.editor import Editor, ImageEffectsArtist
 from kvidgen.core.audio.audio_concat import AudioConcatenator
 from kvidgen.core.audio.audio_mixer import FfmpegAudioMixer
 from kvidgen.core.audio.audio_video import FfmpegAudioVideoMerger
 from kvidgen.core.video.video_generator import SlideshowVideoGenerator
-from kvidgen.utils.common import split_text, get_audio_duration
+from kvidgen.utils.common import split_text, get_audio_duration, file_to_base64
 from kvidgen.utils.download import download_file, download_image_file
 from kvidgen.utils.oss_client import AliyunOssClient
 from kvidgen.utils.tts_client import TTSClient
@@ -74,11 +75,17 @@ class VideoGenerationStep(PipelineStep):
     async def process(self, data: Any) -> Any:
         logger.info("Generating slideshow video")
         images = await download_image_file(data["tmp_dir"], data["image_urls"])
+        tasks = [ImageEffectsArtist().run(file_to_base64(image)) for image in images]
+        results = await asyncio.gather(*tasks)
+        effect_config = {
+            images[index]: result[0] for index, result in enumerate(results)
+        }
+        logger.debug(f"images Effect end, effect_config: {effect_config}")
         slideshow_video = SlideshowVideoGenerator(
             images=images,
             output_path=os.path.join(data["tmp_dir"], "slideshow.mp4"),
             total_duration=math.floor(get_audio_duration(data["mixed_audio"])) + 1,
-            effect_config={image: "zoom" for image in images},
+            effect_config=effect_config,
         ).create_video()
         data["slideshow_video"] = slideshow_video
         return data

@@ -52,7 +52,7 @@ class TTSClient:
             "audio": {
                 "voice_type": voice_type,
                 "encoding": "mp3",
-                "speed_ratio": 1.0,
+                "speed_ratio": 1.1,
                 "volume_ratio": 1.0,
                 "pitch_ratio": 1.0,
                 "emotion": "sad",

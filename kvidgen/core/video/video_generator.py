@@ -1,7 +1,6 @@
+from typing import List, Tuple, Dict
 import cv2
 import numpy as np
-from typing import List, Tuple, Dict
-
 from loguru import logger
 
 from kvidgen.core.video.effect import EffectRegistry
@@ -15,7 +14,8 @@ class SlideshowVideoGenerator:
         frame_size: Tuple[int, int] = None,
         fps: int = 30,
         total_duration: int = 10,
-        effect_config: Dict[str, str] = None,
+        duration_config: Dict[str, int] = None,
+        effect_config: Dict[str, List[str]] = None,
     ):
         """
         初始化图片轮播视频生成器。
@@ -24,13 +24,15 @@ class SlideshowVideoGenerator:
         :param frame_size: 视频帧大小 (宽度, 高度)，如果未提供，将根据图片动态调整。
         :param fps: 视频帧率。
         :param total_duration: 视频总时长（秒）。
-        :param effect_config: 每张图片对应的特效名称映射。
+        :param duration_config: 每张图片的显示时长（秒）。
+        :param effect_config: 每张图片的特效列表映射。
         """
         self.images = images
         self.output_path = output_path
         self.frame_size = frame_size
         self.fps = fps
         self.total_duration = total_duration
+        self.duration_config = duration_config or {}
         self.effect_config = effect_config or {}
         self.validate_inputs()
         if self.frame_size is None:
@@ -67,8 +69,9 @@ class SlideshowVideoGenerator:
 
     def create_video(self):
         """生成图片轮播视频。"""
+        # 总帧数
         num_frames = self.fps * self.total_duration
-        frames_per_image = num_frames // len(self.images)
+        frame_durations = self.calculate_frame_durations(num_frames)
 
         # 创建视频写入对象
         fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # 使用 mp4v 编码
@@ -76,35 +79,38 @@ class SlideshowVideoGenerator:
             self.output_path, fourcc, self.fps, self.frame_size
         )
 
-        for image_path in self.images:
+        for idx, image_path in enumerate(self.images):
             img = cv2.imread(image_path)
             if img is None:
                 logger.warning(f"警告: 无法读取图片 {image_path}，跳过。")
                 continue
-            # 调整图片大小以适应动态帧大小
+
             img_resized = self.resize_with_padding(img, self.frame_size)
 
-            # 应用特效
-            effect_name = self.effect_config.get(image_path)
-            if effect_name:
-                effect = EffectRegistry.get_effect(effect_name)
-                for frame_idx in range(frames_per_image):
-                    frame = effect.apply(img_resized, frame_idx, frames_per_image)
-                    video_writer.write(frame)
-            else:
-                for _ in range(frames_per_image):
-                    video_writer.write(img_resized)
+            # 获取特效列表
+            effect_names = self.effect_config.get(image_path, [])
+            frame_count = frame_durations[idx]
 
-        # 如果图片总帧数不足，补齐最后一张图片
-        remaining_frames = num_frames - frames_per_image * len(self.images)
-        if remaining_frames > 0 and self.images:
-            last_image = cv2.imread(self.images[-1])
-            last_image_resized = self.resize_with_padding(last_image, self.frame_size)
-            for _ in range(remaining_frames):
-                video_writer.write(last_image_resized)
+            # 应用多个特效
+            for frame_idx in range(frame_count):
+                processed_img = img_resized
+                for effect_name in effect_names:
+                    effect = EffectRegistry.get_effect(effect_name)
+                    processed_img = effect.apply(processed_img, frame_idx, frame_count)
+                video_writer.write(processed_img)
 
         video_writer.release()
         return self.output_path
+
+    def calculate_frame_durations(self, num_frames: int) -> List[int]:
+        """根据配置计算每张图片的帧数分配。"""
+        durations = []
+        for image_path in self.images:
+            duration = self.duration_config.get(
+                image_path, self.total_duration // len(self.images)
+            )
+            durations.append(self.fps * duration)
+        return durations
 
     def resize_with_padding(
         self, img: np.ndarray, target_size: Tuple[int, int]

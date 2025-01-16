@@ -1,5 +1,8 @@
 import json
 import subprocess
+import base64
+
+from loguru import logger
 
 
 def split_text(text):
@@ -73,3 +76,24 @@ def get_audio_duration(file_path):
     )
     info = json.loads(result.stdout)
     return float(info["format"]["duration"])
+
+
+def file_to_base64(file_path):
+    """
+    将文件转换为Base64编码的字符串。
+    :param file_path: 文件的路径。
+    :return: Base64编码的字符串。
+    """
+    try:
+        # 以二进制模式打开文件
+        with open(file_path, "rb") as file:
+            # 读取文件内容
+            file_content = file.read()
+            # 将文件内容转换为Base64编码
+            base64_encoded = base64.b64encode(file_content)
+            # 将字节编码的Base64字符串转换为普通字符串
+            base64_str = base64_encoded.decode("utf-8")
+            return base64_str
+    except Exception as e:
+        logger.error(f"file_to_base64 Error: {e}")
+        return None
